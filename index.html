@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacky Néspoli Lanches | Delivery em Santo Antônio da Platina</title>
+    <meta name="description" content="Jacky Néspoli Lanches - Delivery grátis em Santo Antônio da Platina.">
+    
+    <meta property="og:title" content="Jacky Néspoli Lanches | Delivery">
+    <meta property="og:image" content="759941749_17949537495227720_7281400270392510116_n.jpg">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#E85D2A',
+                        primaryhover: '#d14e1f',
+                        dark: '#1a1a1a',
+                        graytext: '#6b7280',
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        html { scroll-behavior: smooth; }
+        section { scroll-margin-top: 80px; }
+
+        .side-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            z-index: 9999;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.15);
+        }
+        .side-panel.active { transform: translateX(0); }
+        
+        .side-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .side-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .cat-tab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 14px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+        }
+        .cat-tab.active {
+            color: #1a1a1a;
+            font-weight: 700;
+            border-bottom-color: #E85D2A;
+        }
+
+        .cat-scroll {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            border-bottom: 1px solid #f0f0f0;
+            background: #fff;
+        }
+        .cat-scroll::-webkit-scrollbar { display: none; }
+
+        .panel-scroll::-webkit-scrollbar { width: 6px; }
+        .panel-scroll::-webkit-scrollbar-track { background: #f5f5f5; }
+        .panel-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 18px 16px;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .product-item:hover { background: #fafafa; }
+        .product-item:last-child { border-bottom: none; }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.25); }
+        }
+        .bounce-anim { animation: bounce 0.3s ease-in-out; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .modal-product {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 0;
+        }
+        @media (min-width: 640px) {
+            .modal-product { align-items: center; padding: 16px; }
+        }
+        .modal-product.active { display: flex; }
+        
+        .modal-content {
+            background: #fff;
+            width: 100%;
+            max-width: 540px;
+            max-height: 90vh;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        @media (min-width: 640px) {
+            .modal-content { border-radius: 16px; max-height: 85vh; }
+        }
+
+        .product-image-placeholder {
+            height: 140px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        .addon-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .addon-item:hover { background: #fafafa; }
+        .addon-item input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            accent-color: #E85D2A;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        #floating-cart {
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Botões do carrinho */
+        .cart-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: #1a1a1a;
+            transition: all 0.15s;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .cart-btn:hover {
+            border-color: #E85D2A;
+            color: #E85D2A;
+        }
+        .cart-trash {
+            color: #9ca3af;
+            transition: color 0.15s;
+            cursor: pointer;
+            font-size: 14px;
+            background: transparent;
+            border: none;
+            padding: 4px;
+        }
+        .cart-trash:hover { color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50 text-dark font-sans antialiased">
+
+    <!-- ================= HEADER ================= -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-white shadow-sm">
+        <div class="px-4 py-3 flex items-center justify-between">
+            <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="flex items-center gap-3">
+                <img src="759941749_17949537495227720_7281400270392510116_n.jpg" alt="Jacky Néspoli Lanches" class="h-9 w-9 object-contain rounded-full">
+                <span class="font-bold text-dark hidden sm:block">Jacky Néspoli</span>
+            </button>
+            
+            <div class="flex items-center gap-2">
+                <button id="btn-history" class="relative text-dark p-2" title="Meus Pedidos">
+                    <i class="fas fa-receipt text-lg"></i>
+                    <span id="history-badge" class="absolute -top-0.5 -right-0.5 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+                <button id="btn-cart" class="relative text-dark p-2">
+                    <i class="fas fa-shopping-bag text-lg"></i>
+                    <span id="cart-count" class="absolute -top-0.5 -right-0.5 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= BANNER + INFO ================= -->
+    <div class="pt-14">
+        <div class="relative w-full h-44 md:h-56 bg-gray-200 overflow-hidden">
+            <img src="IMG-20261008-WA0066.jpg" alt="Banner Jacky Néspoli Lanches" class="w-full h-full object-cover">
+        </div>
+
+        <div class="bg-white px-4 pb-4 relative">
+            <div class="flex items-start gap-4 -mt-10">
+                <div class="bg-white rounded-full p-1 shadow-md flex-shrink-0">
+                    <img src="759941749_17949537495227720_7281400270392510116_n.jpg" alt="Logo" class="h-20 w-20 object-contain rounded-full">
+                </div>
+                <div class="pt-12 flex-1">
+                    <h1 class="text-xl font-bold text-dark">Jacky Néspoli Lanches</h1>
+                </div>
+            </div>
+
+            <div class="mt-3 space-y-1 text-sm text-graytext">
+                <p class="flex items-center gap-2">
+                    <i class="fas fa-map-marker-alt text-primary w-4"></i>
+                    Marechal Laranjo Quadros, 79 — Jardim Santa Crescência
+                </p>
+                <p class="flex items-center gap-2">
+                    <i class="fas fa-clock text-primary w-4"></i>
+                    <span class="text-green-600 font-semibold">Aberto</span> até 23:59
+                </p>
+                <div class="flex flex-wrap gap-2 pt-1">
+                    <span class="bg-green-50 text-green-700 text-xs font-semibold px-2.5 py-1 rounded">
+                        <i class="fas fa-motorcycle mr-1"></i> Entrega Grátis
+                    </span>
+                    <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded">
+                        <i class="fas fa-store mr-1"></i> Retirada
+                    </span>
+                </div>
+            </div>
+
+            <a href="https://wa.me/5543998112555" target="_blank" class="mt-4 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition">
+                <i class="fab fa-whatsapp"></i> Falar no WhatsApp
+            </a>
+        </div>
+
+        <!-- ================= ABAS ================= -->
+        <div class="sticky top-14 z-40 bg-white border-b border-gray-100">
+            <div class="cat-scroll no-scrollbar" id="categories">
+                <button class="cat-tab active" data-cat="todos">Todos</button>
+                <button class="cat-tab" data-cat="lanches">Lanches 🍔</button>
+                <button class="cat-tab" data-cat="cachorros">Cachorros 🌭</button>
+                <button class="cat-tab" data-cat="saladas">Saladas 🥗</button>
+                <button class="cat-tab" data-cat="porcoes">Porções 🍟</button>
+                <button class="cat-tab" data-cat="bebidas">Bebidas 🥤</button>
+            </div>
+        </div>
+
+        <div class="bg-white" id="products-list"></div>
+
+        <!-- ================= INFORMAÇÕES ================= -->
+        <div class="bg-white mt-3 px-4 py-6">
+            <h3 class="font-bold text-dark mb-3">Informações</h3>
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between border-b border-gray-100 pb-3">
+                    <span class="text-graytext">Horário de funcionamento</span>
+                    <span class="font-medium text-dark">18:30 às 00:00</span>
+                </div>
+                <div class="flex justify-between border-b border-gray-100 pb-3">
+                    <span class="text-graytext">Taxa de entrega</span>
+                    <span class="font-medium text-green-600">Grátis</span>
+                </div>
+                <div class="flex justify-between border-b border-gray-100 pb-3">
+                    <span class="text-graytext">Formas de pagamento</span>
+                    <span class="font-medium text-dark">Pix, Cartão e Dinheiro</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-graytext">Tipo de atendimento</span>
+                    <span class="font-medium text-dark">Entrega e Retirada</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= RODAPÉ ================= -->
+        <footer class="bg-white mt-3 px-4 py-8 text-center border-t border-gray-100">
+            <img src="759941749_17949537495227720_7281400270392510116_n.jpg" alt="Logo" class="h-14 w-14 object-contain rounded-full mx-auto mb-3">
+            <p class="font-bold text-dark mb-1">JACKY NÉSPOLI LANCHES</p>
+            <p class="text-xs text-graytext mb-4">Delivery grátis dentro da cidade</p>
+            <p class="text-xs text-gray-400">&copy; 2026 Jacky Néspoli Lanches</p>
+        </footer>
+
+        <div class="h-24"></div>
+    </div>
+
+    <!-- ================= BOTÃO FLUTUANTE ================= -->
+    <button id="floating-cart" class="fixed bottom-4 left-4 right-4 z-40 bg-primary hover:bg-primaryhover text-white font-bold py-4 rounded-xl transition hidden items-center justify-center gap-2">
+        <i class="fas fa-shopping-bag"></i>
+        <span>Ver Sacola</span>
+        <span id="floating-cart-count" class="bg-white/25 px-2 py-0.5 rounded-full text-sm hidden">0</span>
+        <span id="floating-cart-total" class="ml-auto">R$ 0,00</span>
+    </button>
+
+    <!-- ================= OVERLAY ================= -->
+    <div id="side-overlay" class="side-overlay"></div>
+    
+    <!-- ================= CARRINHO ================= -->
+    <div id="cart-panel" class="side-panel">
+        <div class="p-4 border-b border-gray-100 flex justify-between items-center flex-shrink-0">
+            <h3 class="text-lg font-bold text-dark flex items-center gap-2">
+                <i class="fas fa-shopping-bag text-primary"></i> Sua Sacola
+            </h3>
+            <button id="btn-close-cart" class="text-graytext hover:text-dark text-2xl w-8 h-8 flex items-center justify-center">&times;</button>
+        </div>
+
+        <div class="panel-scroll flex-1 overflow-y-auto p-4 space-y-3" id="cart-items">
+            <div class="text-center text-graytext py-10" id="empty-cart-msg">
+                <i class="fas fa-shopping-cart text-4xl mb-3 opacity-30"></i>
+                <p class="font-medium">Sua sacola está vazia</p>
+                <p class="text-sm">Adicione itens do cardápio</p>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-gray-100 bg-gray-50 flex-shrink-0">
+            <div class="flex justify-between text-graytext text-sm mb-2">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">R$ 0,00</span>
+            </div>
+            <div class="flex justify-between text-graytext text-sm mb-3">
+                <span>Taxa de entrega</span>
+                <span class="text-green-600 font-semibold">Grátis</span>
+            </div>
+            <div class="flex justify-between text-dark font-bold text-lg mb-4 pt-3 border-t border-gray-200">
+                <span>Total</span>
+                <span id="cart-total">R$ 0,00</span>
+            </div>
+            <button id="btn-checkout" class="w-full bg-primary hover:bg-primaryhover text-white font-bold py-3.5 rounded-lg transition">
+                Finalizar Pedido
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= HISTÓRICO ================= -->
+    <div id="history-panel" class="side-panel">
+        <div class="p-4 border-b border-gray-100 flex justify-between items-center flex-shrink-0">
+            <h3 class="text-lg font-bold text-dark flex items-center gap-2">
+                <i class="fas fa-receipt text-primary"></i> Meus Pedidos
+            </h3>
+            <button id="btn-close-history" class="text-graytext hover:text-dark text-2xl w-8 h-8 flex items-center justify-center">&times;</button>
+        </div>
+
+        <div class="panel-scroll flex-1 overflow-y-auto p-4" id="history-items">
+            <div class="text-center text-graytext py-10" id="empty-history-msg">
+                <i class="fas fa-receipt text-4xl mb-3 opacity-30"></i>
+                <p class="font-medium">Você ainda não fez pedidos</p>
+                <p class="text-sm">Seus pedidos aparecerão aqui</p>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-gray-100 bg-gray-50 flex-shrink-0">
+            <button id="btn-clear-history" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-3 rounded-lg transition text-sm">
+                <i class="fas fa-trash-alt mr-2"></i> Limpar Histórico
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= MODAL PRODUTO ================= -->
+    <div id="product-modal" class="modal-product">
+        <div class="modal-content">
+            <div class="relative flex-shrink-0">
+                <button id="btn-close-product" class="absolute top-3 right-3 z-10 bg-white/90 hover:bg-white text-dark w-9 h-9 rounded-full flex items-center justify-center shadow-md transition">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="product-image-placeholder" id="modal-product-emoji">🍔</div>
+            </div>
+
+            <div class="panel-scroll flex-1 overflow-y-auto">
+                <div class="p-5 border-b border-gray-100">
+                    <h2 id="modal-product-name" class="text-xl font-bold text-dark mb-2"></h2>
+                    <p id="modal-product-desc" class="text-sm text-graytext leading-relaxed mb-3"></p>
+                    <span id="modal-product-price" class="text-xl font-bold text-dark"></span>
+                </div>
+
+                <div id="modal-addons-section" class="border-b border-gray-100">
+                    <div class="px-5 py-4">
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="font-bold text-dark">Adicionais</h3>
+                            <span class="text-xs text-graytext bg-gray-100 px-2 py-0.5 rounded-full">Opcional</span>
+                        </div>
+                        <p class="text-xs text-graytext">Escolha os adicionais que deseja no seu pedido.</p>
+                    </div>
+                    <div id="modal-addons-list"></div>
+                </div>
+
+                <div class="p-5 border-b border-gray-100">
+                    <label class="block text-sm font-medium text-dark mb-2">Alguma observação?</label>
+                    <textarea id="modal-product-observation" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-dark text-sm focus:border-primary focus:outline-none" placeholder="Ex: Sem cebola, ponto da carne..."></textarea>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-gray-100 bg-white flex-shrink-0">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="text-sm font-medium text-dark">Quantidade:</span>
+                    <div class="flex items-center bg-gray-100 rounded-lg">
+                        <button id="btn-modal-minus" class="w-10 h-10 flex items-center justify-center text-dark hover:text-primary transition">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <span id="modal-product-qty" class="w-8 text-center font-bold text-dark">1</span>
+                        <button id="btn-modal-plus" class="w-10 h-10 flex items-center justify-center text-dark hover:text-primary transition">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="btn-add-only" class="bg-gray-100 hover:bg-gray-200 text-dark font-semibold py-3.5 rounded-lg transition text-sm">
+                        Adicionar
+                    </button>
+                    <button id="btn-add-and-open" class="bg-primary hover:bg-primaryhover text-white font-bold py-3.5 rounded-lg transition text-sm flex items-center justify-center gap-2">
+                        <span>Adicionar</span>
+                        <span id="modal-total-price" class="font-bold">R$ 0,00</span>
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+                <p class="text-[11px] text-graytext text-center mt-2">
+                    O botão laranja adiciona e abre a sacola automaticamente
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL CHECKOUT ================= -->
+    <div id="checkout-modal" class="fixed inset-0 z-[9999] bg-black/60 hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-lg w-full my-8 flex flex-col max-h-[90vh]">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center flex-shrink-0">
+                <h3 class="text-xl font-bold text-dark">Finalizar Pedido</h3>
+                <button id="btn-close-checkout" class="text-graytext hover:text-dark text-2xl w-8 h-8 flex items-center justify-center">&times;</button>
+            </div>
+
+            <form id="checkout-form" class="flex-1 overflow-y-auto p-5 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-dark mb-1.5">Nome Completo *</label>
+                    <input type="text" id="client-name" required class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-dark focus:border-primary focus:outline-none" placeholder="Seu nome completo">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-dark mb-1.5">Telefone *</label>
+                    <input type="tel" id="client-phone" required class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-dark focus:border-primary focus:outline-none" placeholder="(43) 99999-9999">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-dark mb-2">Tipo de Pedido *</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="delivery-type" value="Entrega" checked class="peer hidden">
+                            <div class="text-center py-3 rounded-lg border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-orange-50 peer-checked:text-primary text-graytext transition font-medium text-sm">
+                                <i class="fas fa-motorcycle mr-1"></i> Entrega
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="delivery-type" value="Retirada" class="peer hidden">
+                            <div class="text-center py-3 rounded-lg border-2 border-gray-200 peer-checked:border-primary peer-checked:bg-orange-50 peer-checked:text-primary text-graytext transition font-medium text-sm">
+                                <i class="fas fa-store mr-1"></i> Retirada
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="address-fields" class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-dark mb-1.5">Endereço (Rua e Número) *</label>
+                        <input type="text" id="client-address" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-dark focus:border-primary focus:outline-none" placeholder="Rua e número">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-dark mb-1.5">Bairro *</label>
+                            <input type="text" id="client-neighborhood" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-dark focus:border-primary focus:outline-none" placeholder="Bairro">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-dark mb-1.5">Referência</label>
+                            <input type="text" id="client-reference" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-dark focus:border-primary focus:outline-none" placeholder="Opcional">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-dark mb-1.5">Forma de Pagamento *</label>
+                    <select id="payment-method" required class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-dark focus:border-primary focus:outline-none">
+                        <option value="Pix">Pix</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                    </select>
+                </div>
+
+                <div id="change-field" class="hidden">
+                    <label class="block text-sm font-medium text-dark mb-1.5">Troco para quanto?</label>
+                    <input type="text" id="client-change" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-dark focus:border-primary focus:outline-none" placeholder="Ex: R$ 100,00">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-dark mb-1.5">Observações do Pedido</label>
+                    <textarea id="client-observations" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-dark focus:border-primary focus:outline-none" placeholder="Ex: Sem cebola..."></textarea>
+                </div>
+
+                <div class="bg-yellow-50 border border-yellow-300 rounded-lg p-3 flex items-start gap-2">
+                    <i class="fas fa-exclamation-triangle text-yellow-600 mt-0.5"></i>
+                    <p class="text-xs text-yellow-800 leading-relaxed">
+                        <strong>Importante:</strong> ao clicar em enviar, você será redirecionado para o WhatsApp com a mensagem pronta. <strong>É obrigatório enviar essa mensagem</strong> para que o pedido seja confirmado.
+                    </p>
+                </div>
+            </form>
+
+            <div class="p-4 border-t border-gray-100 flex-shrink-0">
+                <button type="submit" form="checkout-form" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-lg transition text-base">
+                    <i class="fab fa-whatsapp mr-2"></i> Enviar Pedido pelo WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        const STORAGE_KEYS = {
+            CART: 'jacky_cart',
+            HISTORY: 'jacky_history',
+            CLIENT: 'jacky_client_data'
+        };
+
+        const products = [
+            { id: 1, name: 'X Burguer', desc: 'Pão, hambúrguer, presunto e queijo.', price: 16.00, category: 'lanches', emoji: '🍔', hasAddons: true },
+            { id: 2, name: 'X Salada', desc: 'Pão, tomate, hambúrguer, bacon, presunto, queijo e alface.', price: 19.00, category: 'lanches', emoji: '🍔', hasAddons: true },
+            { id: 3, name: 'X Egg', desc: 'Pão, tomate, hambúrguer, bacon, presunto, queijo, ovo e alface.', price: 21.00, category: 'lanches', emoji: '🍔', hasAddons: true },
+            { id: 4, name: 'X-Bacon', desc: 'Pão, tomate, hambúrguer, +bacon, presunto, queijo e alface.', price: 22.00, category: 'lanches', emoji: '🥓', hasAddons: true },
+            { id: 5, name: 'X Bacon Egg', desc: 'Pão, tomate, hambúrguer, +bacon, presunto, queijo, ovo e alface.', price: 24.00, category: 'lanches', emoji: '🥓', hasAddons: true },
+            { id: 6, name: 'X Calabresa', desc: 'Pão, tomate, hambúrguer, bacon, calabresa, presunto, queijo e alface.', price: 25.00, category: 'lanches', emoji: '🍔', hasAddons: true },
+            { id: 7, name: 'X Frango Especial', desc: 'Pão, tomate, milho, frango, batata palha, Catupiry, queijo e alface.', price: 26.00, category: 'lanches', emoji: '🍗', hasAddons: true },
+            { id: 8, name: 'X Alcatra', desc: 'Pão, tomate, alcatra, batata palha, queijo e alface.', price: 28.00, category: 'lanches', emoji: '🥩', hasAddons: true },
+            { id: 9, name: 'X Tudo', desc: 'Pão, salsicha, tomate, milho, catupiry, batata palha, +bacon, +queijo, presunto, hambúrguer, ovo e alface.', price: 27.00, category: 'lanches', emoji: '🍔', hasAddons: true },
+            { id: 10, name: 'X Tudo + Calabresa + Frango', desc: 'Pão, 2 salsichas, tomate, milho, catupiry, batata palha, +bacon, +queijo, presunto, hambúrguer, ovo, frango, calabresa e alface.', price: 33.00, category: 'lanches', emoji: '🍔', hasAddons: true },
+            { id: 11, name: 'X Burguer Artesanal', desc: 'Pão, hambúrguer artesanal, presunto e queijo.', price: 19.00, category: 'lanches', emoji: '🍔', hasAddons: true },
+            { id: 12, name: 'X Costela Artesanal', desc: 'Pão, tomate, molho, cheddar, hambúrguer artesanal, bacon, queijo e alface.', price: 26.00, category: 'lanches', emoji: '🥩', hasAddons: true },
+            { id: 13, name: 'X Calabresa Artesanal', desc: 'Pão, tomate, molho barbecue, cheddar, hambúrguer artesanal, bacon, queijo, calabresa, cebola roxa e alface.', price: 30.00, category: 'lanches', emoji: '🍔', hasAddons: true },
+            { id: 14, name: 'X Quaresma', desc: 'Pão, tomate, batata palha, 2 ovos, +queijo, milho, catupiry e alface.', price: 19.00, category: 'lanches', emoji: '🍳', hasAddons: true },
+            { id: 15, name: 'X Pernil', desc: 'Pão, tomate, batata palha, pernil, +queijo, pimentão, cebola e alface.', price: 26.00, category: 'lanches', emoji: '🍖', hasAddons: true },
+            { id: 16, name: 'X Strogonoff', desc: 'Pão, strogonoff de alcatra e queijo.', price: 30.00, category: 'lanches', emoji: '🍲', hasAddons: true },
+            { id: 17, name: 'Cachorro Quente Simples', desc: 'Pão, salsicha, tomate, bacon, queijo, batata palha e alface.', price: 17.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 18, name: 'Cachorro Quente + Bacon', desc: 'Pão, salsicha, tomate, +bacon, queijo, batata palha e alface.', price: 20.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 19, name: 'Cachorro Quente + Queijo', desc: 'Pão, salsicha, tomate, bacon, +queijo, batata palha e alface.', price: 20.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 20, name: 'Cachorro Quente + Salsicha', desc: 'Pão, +salsicha, tomate, bacon, queijo, batata palha e alface.', price: 20.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 21, name: 'Cachorro Quente + Ovo', desc: 'Pão, salsicha, tomate, bacon, queijo, batata palha, ovo e alface.', price: 20.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 22, name: 'Cachorro Quente + Hambúrguer', desc: 'Pão, salsicha, tomate, bacon, queijo, batata palha, hambúrguer e alface.', price: 20.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 23, name: 'Cachorro Quente + Queijo + Bacon', desc: 'Pão, salsicha, tomate, +bacon, +queijo, batata palha e alface.', price: 23.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 24, name: 'Cachorro Quente + Frango OU Calabresa', desc: 'Pão, salsicha, tomate, bacon, queijo, batata palha, alface, frango ou calabresa.', price: 25.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 25, name: 'Cachorro Quente + Alcatra', desc: 'Pão, salsicha, tomate, bacon, queijo, batata palha, alcatra e alface.', price: 26.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 26, name: 'Cachorro Quente Especial', desc: 'Pão, 2 salsichas, tomate, +bacon, +queijo, +batata palha, milho, catupiry, ovo e alface.', price: 27.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 27, name: 'Cachorro Quente Especial + (Frango OU Calabresa)', desc: 'Pão, 2 salsichas, tomate, +bacon, +queijo, +batata palha, milho, catupiry, ovo e alface.', price: 31.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 28, name: 'Cachorro Quente Especial + Alcatra', desc: 'Pão, 2 salsichas, tomate, +bacon, +queijo, +batata palha, milho, catupiry, ovo e alface.', price: 34.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 29, name: 'Cachorro Quente da Marii', desc: 'Pão, salsicha, tomate, +bacon, +queijo, batata palha, cebola, anéis de cebola e alface.', price: 20.00, category: 'cachorros', emoji: '🌭', hasAddons: true },
+            { id: 30, name: 'Salada 300g', desc: 'Tomate, alface, batata palha, milho, molho, alcatra ou frango.', price: 20.00, category: 'saladas', emoji: '🥗', hasAddons: false },
+            { id: 31, name: 'Salada 500g', desc: 'Tomate, alface, batata palha, milho, molho, alcatra ou frango.', price: 30.00, category: 'saladas', emoji: '🥗', hasAddons: false },
+            { id: 32, name: 'Combo de Calabresa', desc: 'Porção com calabresa, batata e pão.', price: 30.00, category: 'porcoes', emoji: '🍟', hasAddons: false },
+            { id: 33, name: 'Porção Completa', desc: 'Porção grande com mix de carnes, anéis de cebola e batata.', price: 85.00, category: 'porcoes', emoji: '🍟', hasAddons: false },
+            { id: 34, name: 'Porção de Carne', desc: 'Porção com carne, anéis de cebola e batata.', price: 75.00, category: 'porcoes', emoji: '🍟', hasAddons: false },
+            { id: 35, name: 'Combo de Alcatra', desc: 'Porção com alcatra, batata e pão.', price: 40.00, category: 'porcoes', emoji: '🍟', hasAddons: false },
+            { id: 36, name: 'Batata Frita Kids (150g)', desc: 'Porção infantil de batata frita.', price: 10.00, category: 'porcoes', emoji: '🍟', hasAddons: false },
+            { id: 37, name: 'Batata Frita 300g', desc: 'Porção de batata frita.', price: 15.00, category: 'porcoes', emoji: '🍟', hasAddons: false },
+            { id: 38, name: 'Batata Frita 500g', desc: 'Porção de batata frita.', price: 25.00, category: 'porcoes', emoji: '🍟', hasAddons: false },
+            { id: 39, name: 'Coca-Cola 2L', desc: 'Refrigerante Coca-Cola 2 litros.', price: 15.00, category: 'bebidas', emoji: '🥤', hasAddons: false },
+            { id: 40, name: 'Conquista/Fabiane 2L', desc: 'Refrigerante Conquista ou Fabiane 2 litros.', price: 10.00, category: 'bebidas', emoji: '🥤', hasAddons: false },
+            { id: 41, name: 'Abacaxi/Framboesa/Laranja/Cola e Guaraná 2L', desc: 'Refrigerantes diversos 2 litros.', price: 10.00, category: 'bebidas', emoji: '🥤', hasAddons: false },
+            { id: 42, name: 'Coca-Cola 1L', desc: 'Refrigerante Coca-Cola 1 litro (normal ou zero).', price: 10.00, category: 'bebidas', emoji: '🥤', hasAddons: false },
+            { id: 43, name: 'Coca-Cola 600ml', desc: 'Refrigerante Coca-Cola 600ml (normal ou zero).', price: 8.00, category: 'bebidas', emoji: '🥤', hasAddons: false },
+            { id: 44, name: 'Fabiane 500ml', desc: 'Refrigerante Fabiane 500ml.', price: 5.00, category: 'bebidas', emoji: '🥤', hasAddons: false },
+            { id: 45, name: 'Refrigerante Lata', desc: 'Coca-Cola (normal/zero), Guaraná Antarctica, Fanta Laranja e Uva.', price: 6.00, category: 'bebidas', emoji: '🥤', hasAddons: false },
+            { id: 46, name: 'Cerveja Skol/Brahma Lata 350ml', desc: 'Cerveja Skol ou Brahma lata 350ml.', price: 6.00, category: 'bebidas', emoji: '🍺', hasAddons: false },
+            { id: 47, name: 'Suco de Laranja 300ml', desc: 'Suco de laranja natural 300ml.', price: 7.00, category: 'bebidas', emoji: '🧃', hasAddons: false },
+            { id: 48, name: 'Suco de Laranja 1L', desc: 'Suco de laranja natural 1 litro.', price: 16.00, category: 'bebidas', emoji: '🧃', hasAddons: false },
+            { id: 49, name: "Jack Daniel's Apple 700ml", desc: "Dose de Jack Daniel's Apple 700ml.", price: 30.00, category: 'bebidas', emoji: '🥃', hasAddons: false },
+            { id: 50, name: "Jack Daniel's Trad 700ml", desc: "Dose de Jack Daniel's Tradicional 700ml.", price: 30.00, category: 'bebidas', emoji: '🥃', hasAddons: false },
+            { id: 51, name: 'Passport Trad 700ml', desc: 'Dose de Passport Tradicional 700ml.', price: 25.00, category: 'bebidas', emoji: '🥃', hasAddons: false },
+            { id: 52, name: 'Passport Honey 700ml', desc: 'Dose de Passport Honey 700ml.', price: 25.00, category: 'bebidas', emoji: '🥃', hasAddons: false },
+            { id: 53, name: 'Gin Tanqueray 700ml', desc: 'Dose de Gin Tanqueray 700ml.', price: 30.00, category: 'bebidas', emoji: '🍸', hasAddons: false },
+        ];
+
+        const addons = [
+            { name: 'Bacon', price: 5.00 }, { name: 'Queijo', price: 5.00 },
+            { name: 'Salsicha', price: 5.00 }, { name: 'Hambúrguer Trad.', price: 5.00 },
+            { name: 'Batata Palha', price: 4.00 }, { name: 'Catupiry', price: 4.00 },
+            { name: 'Ovo', price: 4.00 }, { name: 'Cheddar', price: 4.00 },
+            { name: 'Milho', price: 4.00 }, { name: 'Frango', price: 7.00 },
+            { name: 'Calabresa', price: 7.00 }, { name: 'Pernil', price: 7.00 },
+            { name: 'Alcatra', price: 8.00 }, { name: 'Hambúrguer Artesanal', price: 8.00 },
+        ];
+
+        let cart = [];
+        let history = [];
+        let modalProduct = null;
+        let modalQty = 1;
+        let modalAddons = [];
+
+        // ==================== STORAGE ====================
+        function saveToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart));
+                localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(history));
+            } catch (e) {}
+        }
+
+        function loadFromStorage() {
+            try {
+                const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
+                const savedHistory = localStorage.getItem(STORAGE_KEYS.HISTORY);
+                if (savedCart) cart = JSON.parse(savedCart);
+                if (savedHistory) history = JSON.parse(savedHistory);
+            } catch (e) { cart = []; history = []; }
+        }
+
+        function saveClientData(data) {
+            try { localStorage.setItem(STORAGE_KEYS.CLIENT, JSON.stringify(data)); } catch (e) {}
+        }
+
+        function loadClientData() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEYS.CLIENT);
+                return data ? JSON.parse(data) : null;
+            } catch (e) { return null; }
+        }
+
+        // ==================== PRODUTOS ====================
+        function renderProducts(category = 'todos') {
+            const list = document.getElementById('products-list');
+            const filtered = category === 'todos' ? products : products.filter(p => p.category === category);
+
+            list.innerHTML = filtered.map(p => `
+                <div class="product-item" data-product-id="${p.id}">
+                    <div class="flex-1 pr-4">
+                        <h3 class="font-semibold text-dark text-base mb-1">${p.name}</h3>
+                        <p class="text-sm text-graytext leading-snug mb-2">${p.desc}</p>
+                        <span class="font-bold text-dark">R$ ${p.price.toFixed(2).replace('.', ',')}</span>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="w-9 h-9 bg-primary text-white rounded-full flex items-center justify-center">
+                            <i class="fas fa-plus text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Adicionar eventos após renderizar
+            document.querySelectorAll('.product-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const id = parseInt(item.getAttribute('data-product-id'));
+                    openProductModal(id);
+                });
+            });
+        }
+
+        function filterCategory(category) {
+            document.querySelectorAll('.cat-tab').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-cat="${category}"]`).classList.add('active');
+            renderProducts(category);
+        }
+
+        // ==================== MODAL PRODUTO ====================
+        function openProductModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            if (!product.hasAddons) {
+                addToCartDirect(product);
+                return;
+            }
+
+            modalProduct = product;
+            modalQty = 1;
+            modalAddons = [];
+
+            document.getElementById('modal-product-emoji').textContent = product.emoji || '🍔';
+            document.getElementById('modal-product-name').textContent = product.name;
+            document.getElementById('modal-product-desc').textContent = product.desc;
+            document.getElementById('modal-product-price').textContent = `R$ ${product.price.toFixed(2).replace('.', ',')}`;
+            document.getElementById('modal-product-qty').textContent = modalQty;
+            document.getElementById('modal-product-observation').value = '';
+
+            const addonsList = document.getElementById('modal-addons-list');
+            addonsList.innerHTML = addons.map((a, i) => `
+                <label class="addon-item">
+                    <input type="checkbox" data-addon-index="${i}">
+                    <span class="flex-1 text-dark text-sm">${a.name}</span>
+                    <span class="text-primary font-semibold text-sm">+ R$ ${a.price.toFixed(2).replace('.', ',')}</span>
+                </label>
+            `).join('');
+
+            // Adicionar eventos nos checkboxes
+            document.querySelectorAll('#modal-addons-list input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const idx = parseInt(this.getAttribute('data-addon-index'));
+                    toggleModalAddon(idx, this.checked);
+                });
+            });
+
+            document.getElementById('modal-addons-section').style.display = 'block';
+
+            updateModalTotal();
+            document.getElementById('product-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.remove('active');
+            document.body.style.overflow = '';
+            modalProduct = null;
+        }
+
+        function toggleModalAddon(index, checked) {
+            if (checked) {
+                if (!modalAddons.find(a => a.name === addons[index].name)) {
+                    modalAddons.push(addons[index]);
+                }
+            } else {
+                modalAddons = modalAddons.filter(a => a.name !== addons[index].name);
+            }
+            updateModalTotal();
+        }
+
+        function changeModalQty(delta) {
+            modalQty += delta;
+            if (modalQty < 1) modalQty = 1;
+            document.getElementById('modal-product-qty').textContent = modalQty;
+            updateModalTotal();
+        }
+
+        function updateModalTotal() {
+            if (!modalProduct) return;
+            const addonsTotal = modalAddons.reduce((s, a) => s + a.price, 0);
+            const total = (modalProduct.price + addonsTotal) * modalQty;
+            document.getElementById('modal-total-price').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+
+        // ==================== ADICIONAR ====================
+        function addProductFromModal(openCartAfter) {
+            if (!modalProduct) return;
+            
+            const observation = document.getElementById('modal-product-observation').value;
+
+            const existing = cart.find(item => 
+                item.id === modalProduct.id && 
+                JSON.stringify(item.addons.map(a => a.name).sort()) === JSON.stringify(modalAddons.map(a => a.name).sort()) &&
+                item.observation === observation
+            );
+
+            if (existing) {
+                existing.qty += modalQty;
+            } else {
+                cart.push({
+                    id: modalProduct.id,
+                    name: modalProduct.name,
+                    price: modalProduct.price,
+                    qty: modalQty,
+                    addons: [...modalAddons],
+                    observation: observation
+                });
+            }
+
+            saveToStorage();
+            updateCart();
+            
+            const addedName = modalProduct.name;
+            closeProductModal();
+            
+            if (openCartAfter) {
+                setTimeout(() => openCart(), 250);
+            } else {
+                showToast(`${addedName} adicionado!`);
+            }
+            
+            const cartBtn = document.getElementById('cart-count');
+            if (cartBtn) {
+                cartBtn.classList.add('bounce-anim');
+                setTimeout(() => cartBtn.classList.remove('bounce-anim'), 300);
+            }
+        }
+
+        function addToCartDirect(product) {
+            const existing = cart.find(item => item.id === product.id && item.addons.length === 0 && !item.observation);
+            if (existing) { 
+                existing.qty += 1; 
+            } else {
+                cart.push({ 
+                    id: product.id, 
+                    name: product.name, 
+                    price: product.price, 
+                    qty: 1, 
+                    addons: [], 
+                    observation: '' 
+                });
+            }
+            saveToStorage();
+            updateCart();
+            showToast(`${product.name} adicionado!`);
+            
+            const cartBtn = document.getElementById('cart-count');
+            if (cartBtn) {
+                cartBtn.classList.add('bounce-anim');
+                setTimeout(() => cartBtn.classList.remove('bounce-anim'), 300);
+            }
+        }
+
+        // ==================== CARRINHO ====================
+        function updateCart() {
+            const itemsContainer = document.getElementById('cart-items');
+            const emptyMsg = document.getElementById('empty-cart-msg');
+            const count = document.getElementById('cart-count');
+            const floatingCart = document.getElementById('floating-cart');
+            const floatingCount = document.getElementById('floating-cart-count');
+            const floatingTotal = document.getElementById('floating-cart-total');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const totalEl = document.getElementById('cart-total');
+
+            if (cart.length === 0) {
+                if (emptyMsg) {
+                    emptyMsg.style.display = 'block';
+                    itemsContainer.innerHTML = '';
+                    itemsContainer.appendChild(emptyMsg);
+                }
+                if (count) count.classList.add('hidden');
+                if (floatingCart) {
+                    floatingCart.classList.add('hidden');
+                    floatingCart.classList.remove('flex');
+                }
+                if (subtotalEl) subtotalEl.textContent = 'R$ 0,00';
+                if (totalEl) totalEl.textContent = 'R$ 0,00';
+                return;
+            }
+
+            if (emptyMsg) emptyMsg.style.display = 'none';
+            let subtotal = 0, totalItems = 0;
+
+            let html = '';
+            cart.forEach((item, index) => {
+                const itemTotal = (item.price + item.addons.reduce((s, a) => s + a.price, 0)) * item.qty;
+                subtotal += itemTotal;
+                totalItems += item.qty;
+
+                html += `
+                    <div class="bg-gray-50 rounded-xl p-3 border border-gray-100">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-semibold text-dark text-sm flex-1 pr-2">${item.name}</h4>
+                            <button class="cart-trash" data-remove-index="${index}" title="Remover">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        ${item.addons.length > 0 ? `<div class="text-xs text-primary mb-2">+ ${item.addons.map(a => `${a.name} (R$ ${a.price.toFixed(2).replace('.', ',')})`).join(', ')}</div>` : ''}
+                        ${item.observation ? `<div class="text-xs text-gray-500 italic mb-2">Obs: ${item.observation}</div>` : ''}
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <button class="cart-btn" data-minus-index="${index}">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <span class="font-bold text-dark w-6 text-center text-sm">${item.qty}</span>
+                                <button class="cart-btn" data-plus-index="${index}">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <span class="font-bold text-dark text-sm">R$ ${itemTotal.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            itemsContainer.innerHTML = html;
+
+            // Adicionar eventos
+            itemsContainer.querySelectorAll('[data-remove-index]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const idx = parseInt(btn.getAttribute('data-remove-index'));
+                    removeFromCart(idx);
+                });
+            });
+
+            itemsContainer.querySelectorAll('[data-minus-index]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const idx = parseInt(btn.getAttribute('data-minus-index'));
+                    changeQty(idx, -1);
+                });
+            });
+
+            itemsContainer.querySelectorAll('[data-plus-index]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const idx = parseInt(btn.getAttribute('data-plus-index'));
+                    changeQty(idx, 1);
+                });
+            });
+
+            if (count) {
+                count.textContent = totalItems;
+                count.classList.remove('hidden');
+            }
+            
+            if (floatingCart) {
+                floatingCart.classList.remove('hidden');
+                floatingCart.classList.add('flex');
+                if (floatingCount) {
+                    floatingCount.textContent = totalItems;
+                    floatingCount.classList.remove('hidden');
+                }
+                if (floatingTotal) {
+                    floatingTotal.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+                }
+            }
+            
+            if (subtotalEl) subtotalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+            if (totalEl) totalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+        }
+
+        function removeFromCart(index) {
+            if (index < 0 || index >= cart.length) return;
+            cart.splice(index, 1);
+            saveToStorage();
+            updateCart();
+            showToast('Item removido');
+        }
+
+        function changeQty(index, delta) {
+            if (index < 0 || index >= cart.length) return;
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            saveToStorage();
+            updateCart();
+        }
+
+        // ==================== PAINÉIS ====================
+        function openCart() {
+            document.getElementById('cart-panel').classList.add('active');
+            document.getElementById('side-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCart() {
+            document.getElementById('cart-panel').classList.remove('active');
+            document.getElementById('side-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function openHistory() {
+            renderHistory();
+            document.getElementById('history-panel').classList.add('active');
+            document.getElementById('side-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeHistory() {
+            document.getElementById('history-panel').classList.remove('active');
+            document.getElementById('side-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function closeAllPanels() {
+            closeCart();
+            closeHistory();
+        }
+
+        // ==================== HISTÓRICO ====================
+        function renderHistory() {
+            const container = document.getElementById('history-items');
+            const emptyMsg = document.getElementById('empty-history-msg');
+            const badge = document.getElementById('history-badge');
+
+            if (history.length === 0) {
+                if (emptyMsg) {
+                    emptyMsg.style.display = 'block';
+                    container.innerHTML = '';
+                    container.appendChild(emptyMsg);
+                }
+                if (badge) badge.classList.add('hidden');
+                return;
+            }
+
+            if (emptyMsg) emptyMsg.style.display = 'none';
+            if (badge) {
+                badge.textContent = history.length;
+                badge.classList.remove('hidden');
+            }
+
+            let html = '';
+            history.slice().reverse().forEach((order, idx) => {
+                const orderNum = history.length - idx;
+                const date = new Date(order.date);
+                const dateStr = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                const timeStr = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+                html += `
+                    <div class="bg-white border border-gray-200 rounded-xl p-4 mb-3">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <p class="text-primary font-bold text-sm">Pedido #${String(orderNum).padStart(4, '0')}</p>
+                                <p class="text-graytext text-xs">${dateStr} às ${timeStr}</p>
+                            </div>
+                            <span class="bg-green-50 text-green-700 text-xs font-semibold px-2.5 py-1 rounded">${order.deliveryType}</span>
+                        </div>
+                        <div class="space-y-1 mb-3">
+                            ${order.items.map(item => `
+                                <div class="flex justify-between text-xs text-graytext">
+                                    <span>${item.qty}x ${item.name}</span>
+                                    <span>R$ ${((item.price + (item.addons || []).reduce((s, a) => s + a.price, 0)) * item.qty).toFixed(2).replace('.', ',')}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-gray-100">
+                            <span class="text-dark font-bold text-sm">Total: <span class="text-primary">R$ ${order.total.toFixed(2).replace('.', ',')}</span></span>
+                            <button class="bg-primary text-white text-xs font-bold px-3 py-2 rounded-lg transition" data-reorder-index="${history.length - 1 - idx}">
+                                <i class="fas fa-redo mr-1"></i> Pedir Novamente
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            container.querySelectorAll('[data-reorder-index]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = parseInt(btn.getAttribute('data-reorder-index'));
+                    reorder(idx);
+                });
+            });
+        }
+
+        function reorder(index) {
+            const order = history[index];
+            if (!order) return;
+            
+            order.items.forEach(item => {
+                const existing = cart.find(c => 
+                    c.id === item.id && 
+                    JSON.stringify(c.addons) === JSON.stringify(item.addons || []) &&
+                    c.observation === (item.observation || '')
+                );
+                if (existing) { 
+                    existing.qty += item.qty; 
+                } else {
+                    cart.push({ 
+                        id: item.id, 
+                        name: item.name, 
+                        price: item.price, 
+                        qty: item.qty, 
+                        addons: item.addons || [], 
+                        observation: item.observation || ''
+                    });
+                }
+            });
+
+            saveToStorage();
+            updateCart();
+            closeHistory();
+            setTimeout(() => openCart(), 250);
+            showToast('Itens adicionados!');
+        }
+
+        function clearHistory() {
+            if (confirm('Tem certeza que deseja limpar todo o histórico?')) {
+                history = [];
+                saveToStorage();
+                renderHistory();
+                showToast('Histórico limpo!');
+            }
+        }
+
+        // ==================== CHECKOUT ====================
+        function openCheckout() {
+            if (cart.length === 0) {
+                showToast('Adicione itens primeiro!');
+                return;
+            }
+            closeCart();
+            document.getElementById('checkout-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+
+            const clientData = loadClientData();
+            if (clientData) {
+                if (clientData.name) document.getElementById('client-name').value = clientData.name;
+                if (clientData.phone) document.getElementById('client-phone').value = clientData.phone;
+                if (clientData.address) document.getElementById('client-address').value = clientData.address;
+                if (clientData.neighborhood) document.getElementById('client-neighborhood').value = clientData.neighborhood;
+                if (clientData.reference) document.getElementById('client-reference').value = clientData.reference;
+                if (clientData.payment) document.getElementById('payment-method').value = clientData.payment;
+            }
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkout-modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        function toggleAddress(show) {
+            const fields = document.getElementById('address-fields');
+            const addressInput = document.getElementById('client-address');
+            const neighborhoodInput = document.getElementById('client-neighborhood');
+            
+            if (show) {
+                fields.style.display = 'block';
+                addressInput.required = true;
+                neighborhoodInput.required = true;
+            } else {
+                fields.style.display = 'none';
+                addressInput.required = false;
+                neighborhoodInput.required = false;
+            }
+        }
+
+        // ==================== ENVIAR PEDIDO ====================
+        function sendOrder(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('client-name').value;
+            const phone = document.getElementById('client-phone').value;
+            const deliveryType = document.querySelector('input[name="delivery-type"]:checked').value;
+            const address = document.getElementById('client-address').value;
+            const neighborhood = document.getElementById('client-neighborhood').value;
+            const reference = document.getElementById('client-reference').value;
+            const payment = document.getElementById('payment-method').value;
+            const change = document.getElementById('client-change').value;
+            const observations = document.getElementById('client-observations').value;
+
+            saveClientData({ name, phone, address, neighborhood, reference, payment });
+
+            let message = `*NOVO PEDIDO - JACKY NÉSPOLI LANCHES*\n\n`;
+            message += `*Cliente:* ${name}\n`;
+            message += `*Telefone:* ${phone}\n`;
+            message += `*Tipo:* ${deliveryType}\n`;
+            
+            if (deliveryType === 'Entrega') {
+                message += `*Endereço:* ${address}, ${neighborhood}\n`;
+                if (reference) message += `*Referência:* ${reference}\n`;
+            }
+            
+            message += `\n*ITENS DO PEDIDO:*\n`;
+            
+            let subtotal = 0;
+            cart.forEach(item => {
+                const itemTotal = (item.price + item.addons.reduce((s, a) => s + a.price, 0)) * item.qty;
+                subtotal += itemTotal;
+                message += `• ${item.qty}x ${item.name} - R$ ${itemTotal.toFixed(2).replace('.', ',')}\n`;
+                if (item.addons.length > 0) {
+                    message += `  Adicionais: ${item.addons.map(a => a.name).join(', ')}\n`;
+                }
+                if (item.observation) {
+                    message += `  Obs: ${item.observation}\n`;
+                }
+            });
+            
+            message += `\n*Subtotal:* R$ ${subtotal.toFixed(2).replace('.', ',')}\n`;
+            message += `*Taxa de entrega:* Grátis\n`;
+            message += `*Total:* R$ ${subtotal.toFixed(2).replace('.', ',')}\n`;
+            message += `\n*Forma de pagamento:* ${payment}\n`;
+            if (payment === 'Dinheiro' && change) message += `*Troco para:* ${change}\n`;
+            if (observations) message += `*Observações:* ${observations}\n`;
+
+            history.push({
+                date: new Date().toISOString(),
+                clientName: name,
+                phone: phone,
+                deliveryType: deliveryType,
+                items: JSON.parse(JSON.stringify(cart)),
+                total: subtotal,
+                payment: payment
+            });
+            saveToStorage();
+
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/5543998112555?text=${encodedMessage}`, '_blank');
+            
+            cart = [];
+            saveToStorage();
+            updateCart();
+            closeCheckout();
+            showToast('Pedido enviado! 🍔');
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 bg-dark text-white font-semibold px-5 py-3 rounded-full shadow-lg z-[10001] text-sm';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 20px)';
+                toast.style.transition = 'all 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        // ==================== INICIALIZAÇÃO ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromStorage();
+            renderProducts('todos');
+            updateCart();
+            renderHistory();
+
+            // Botões do header
+            document.getElementById('btn-cart').addEventListener('click', openCart);
+            document.getElementById('btn-history').addEventListener('click', openHistory);
+
+            // Botões de fechar
+            document.getElementById('btn-close-cart').addEventListener('click', closeCart);
+            document.getElementById('btn-close-history').addEventListener('click', closeHistory);
+            document.getElementById('btn-close-product').addEventListener('click', closeProductModal);
+            document.getElementById('btn-close-checkout').addEventListener('click', closeCheckout);
+            document.getElementById('btn-clear-history').addEventListener('click', clearHistory);
+            document.getElementById('btn-checkout').addEventListener('click', openCheckout);
+            document.getElementById('btn-add-only').addEventListener('click', () => addProductFromModal(false));
+            document.getElementById('btn-add-and-open').addEventListener('click', () => addProductFromModal(true));
+            document.getElementById('btn-modal-minus').addEventListener('click', () => changeModalQty(-1));
+            document.getElementById('btn-modal-plus').addEventListener('click', () => changeModalQty(1));
+            document.getElementById('floating-cart').addEventListener('click', openCart);
+
+            // Overlay
+            document.getElementById('side-overlay').addEventListener('click', closeAllPanels);
+
+            // Categorias
+            document.querySelectorAll('.cat-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    filterCategory(tab.getAttribute('data-cat'));
+                });
+            });
+
+            // Endereço - mostrar/ocultar
+            document.querySelectorAll('input[name="delivery-type"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    toggleAddress(this.value === 'Entrega');
+                });
+            });
+
+            // Forma de pagamento - campo de troco
+            document.getElementById('payment-method').addEventListener('change', function() {
+                const changeField = document.getElementById('change-field');
+                if (this.value === 'Dinheiro') changeField.classList.remove('hidden');
+                else changeField.classList.add('hidden');
+            });
+
+            // Form submit
+            document.getElementById('checkout-form').addEventListener('submit', sendOrder);
+
+            // Fechar modal de produto clicando fora
+            document.getElementById('product-modal').addEventListener('click', function(e) {
+                if (e.target === this) closeProductModal();
+            });
+
+            // Fechar checkout clicando fora
+            document.getElementById('checkout-modal').addEventListener('click', function(e) {
+                if (e.target === this) closeCheckout();
+            });
+
+            // ESC para fechar
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeProductModal();
+                    closeCheckout();
+                    closeAllPanels();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
